@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>Easy Prompt Builder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main-header">
+    <h2>Easy Prompt Builder (EZ-prob)</h2>
+  </div>
+    <div id="drop-zone">Drag Files Here</div>
+    <div id="file-list" style="margin:10px 0; font-size:14px; color:#333;"></div>
+
+    <!-- originalpromptThe box remains unchanged -->
+    <div id="prompt" contenteditable="true"></div>
+    <ul id="suggestion-list" class="hidden"></ul>
+
+    <!-- Add a fixed positiondependbox -->
+    <div class="section-label">📁 File Dependencies (use @ to insert files):</div>
+    <div id="depend" contenteditable="true"></div>
+    <ul id="depend-suggestion-list" class="hidden"></ul>
+    <div id="customize-modal" class="hidden">
+<div>
+  <h3>Customized Constraints</h3>
+  <div style="margin-bottom: 0;">
+    
+  </div>
+  <div class="table-container">
+    <table id="cmd-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- The tour will be led byJavaScriptDynamically add -->
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-actions">
+    <button id="add-new-constraint" class="modal-btn">New Constraint</button>
+    <button id="close-cmds" class="modal-btn">Close</button>
+  </div>
+</div>
+  </div>
+  <div id="constraint-edit-modal" class="hidden">
+    <div>
+      <h3 id="constraint-edit-title">Manage Constraint</h3>
+      <div style="margin:10px 0 5px 0; display: flex; justify-content: center;">
+        <input type="text" id="edit-constraint-name" placeholder="Type constraint name here" style="width:100%;margin:0px 0;padding:4px;box-sizing:border-box">
+      </div>
+      <div style="margin:10px 0 5px 0; display: flex; justify-content: center;">
+        <textarea id="edit-constraint-content" placeholder="Type constraint content here" style="width:100%;height:150px;margin:0px 0;padding:4px;resize:vertical;box-sizing:border-box"></textarea>
+      </div>
+      <div class="modal-actions" style="white-space: nowrap;">
+        <button id="save-constraint" class="modal-btn" style="display: inline-block;">Save</button>
+        <button id="cancel-constraint-edit" class="modal-btn" style="display: inline-block;">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="create-file-modal" class="hidden">
+    <div>
+      <h3>Create New File</h3>
+      <div style="margin:10px 0 5px 0; display: flex; justify-content: center;">
+        <input type="text" id="new-filename" placeholder="Type file name here" style="width:90%;margin:0px 0px;padding:4px;box-sizing:border-box;">
+      </div>
+      <div style="margin:10px 0 5px 0; display: flex; justify-content: center;">
+        <input type="text" id="new-filedesc" placeholder="Describe the purpose" style="width:90%;margin:0px 0px;padding:4px;box-sizing:border-box;">
+      </div>
+      <div style="margin:5px 0 10px 0; display: flex; justify-content: center;">
+        <textarea id="new-filecontent" placeholder="Fill file contents here" style="width:90%;height:150px;margin:0px 0px;padding:4px;box-sizing:border-box;"></textarea>
+      </div>
+      <div class="modal-actions" style="white-space: nowrap;">
+        <button id="save-new-file" class="modal-btn" style="display: inline-block;">Save</button>
+        <button id="cancel-new-file" class="modal-btn" style="display: inline-block;">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="settings-modal" class="hidden">
+    <div>
+        <h3>Settings</h3>
+        <div class="modal-actions">
+          <button id="reset-settings" class="modal-btn">Reset to Default</button>
+          <button id="purge-files" class="modal-btn danger">Purge Files</button>
+        </div>
+        <div class="settings-container">
+  <table class="settings-table">
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Numeric settings -->
+      <tr class="setting-row">
+        <td class="param-label">Max total storage (KB)</td>
+        <td class="param-value">
+          <input type="number" id="max-total-storage-kb" min="100" max="10000" class="number-input">
+        </td>
+      </tr>
+      <tr class="setting-row">
+        <td class="param-label">Max single file size (KB)</td>
+        <td class="param-value">
+          <input type="number" id="max-file-size-kb" min="10" max="5000" class="number-input">
+        </td>
+      </tr>
+      <tr class="setting-row">
+        <td class="param-label">Max number of files</td>
+        <td class="param-value">
+          <input type="number" id="max-files-count" min="1" max="100" class="number-input">
+        </td>
+      </tr>
+      <tr class="setting-row">
+        <td class="param-label">Max file age (days)</td>
+        <td class="param-value">
+          <input type="number" id="max-file-age-days" min="1" max="365" class="number-input" disabled>
+        </td>
+      </tr>
+      <tr class="setting-row">
+        <td class="param-label">Max constraint words</td>
+        <td class="param-value">
+          <input type="number" id="max-constraint-words" min="10" max="10000" class="number-input">
+        </td>
+      </tr>
+      <tr class="setting-row">
+        <td class="param-label">Max constraint number</td>
+        <td class="param-value">
+          <input type="number" id="max-constraints-count" min="1" max="100" class="number-input">
+        </td>
+      </tr>
+      <tr class="setting-row">
+        <td class="param-label">Max prompt length (KB)</td>
+        <td class="param-value">
+          <input type="number" id="max-prompt-kb" min="10" max="5000" class="number-input">
+        </td>
+      </tr>
+      <tr class="setting-row">
+        <td class="param-label">Max prompt age (days)</td>
+        <td class="param-value">
+          <input type="number" id="max-prompt-age-days" min="1" max="365" class="number-input" disabled>
+        </td>
+      </tr>
+      
+      <!-- Switch type setting -->
+      <tr class="setting-row">
+        <td class="param-label">Enable auto cleanup</td>
+        <td class="param-value">
+          <label class="toggle-switch">
+            <input type="checkbox" id="auto-cleanup-enabled">
+            <span class="toggle-slider"></span>
+          </label>
+        </td>
+      </tr>
+      <tr class="setting-row">
+        <td class="param-label">Auto cleanup prompt</td>
+        <td class="param-value">
+          <label class="toggle-switch">
+            <input type="checkbox" id="auto-cleanup-prompt-enabled">
+            <span class="toggle-slider"></span>
+          </label>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+      
+      <div class="modal-actions">
+        <button id="save-settings" class="modal-btn">Save</button>
+        <button id="close-settings" class="modal-btn">Cancel</button>
+      </div>
+    </div>
+</div>
+  <div class="modal-actions">
+    <button id="create-file-btn" class="modal-btn">Create File</button>
+    <button id="customize-btn" class="modal-btn">Constraints</button>
+  </div>
+  <div class="modal-actions">
+    <button id="copy-btn" class="modal-btn primary">Copy Prompt</button>
+    <button id="settings-btn" class="modal-btn">Settings</button>
+  </div>
+  <div id="copy-status" style="margin-top:8px;height:22px;">
+  <span class="status-default">
+    <span class="status-icon">🔍</span>
+    <span class="status-text">What are you up to?</span>
+  </span>
+</div>
+  <script src="popup.js"></script>
+</body>
+</html>
