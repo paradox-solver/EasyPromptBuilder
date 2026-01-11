@@ -3,7 +3,7 @@
   "name": "Easy Prompt Builder",
   "version": "1.0",
   "description": "Build LLM-friendly prompts.",
-  "permissions": ["storage", "clipboardWrite"],
+  "permissions": ["clipboardWrite"],
   "action": {
     "default_popup": "popup.html"
   },
